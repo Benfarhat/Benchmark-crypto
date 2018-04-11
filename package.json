@@ -4,15 +4,16 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js",
-    "dev": "nodemon index.js"
+    "start": "nodemon --max-old-space-size=8192 index.js",
+    "dev": "nodemon index.js",
+    "test": "nodemon --max-old-space-size=8192 index.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
     "crypto-js": "^3.1.9-1",
-    "leftpad": "^0.0.1",
+    "js-combinatorics": "^0.5.3",
     "mongoose": "^5.0.14"
   },
   "devDependencies": {
