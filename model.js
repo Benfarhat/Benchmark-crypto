@@ -1,15 +1,10 @@
 const mongoose = require('mongoose')
 const Schema = mongoose.Schema
-const leftpad = require('leftpad')
 const CryptoJS = require('crypto-js')
 
 
 // Create Schema
-const cryptoSchema = new Schema({
-    id : {
-        type: Number,
-        unique: true
-    },
+const correspondanceSchema = new Schema({
     identity:{
         type: String,
         unique: true
@@ -17,13 +12,12 @@ const cryptoSchema = new Schema({
     hash: String
 })
 
-cryptoSchema.pre('save', function(next) {
+// Pre save 
+correspondanceSchema.pre('save', function(next) {
     const crypto = this
-    let word = leftpad(crypto.id, 8)
-    crypto.hash = CryptoJS.SHA256(word).toString(CryptoJS.enc.hex).toUpperCase()
-    crypto.identity = word
+    crypto.hash = CryptoJS.SHA256(crypto.hash).toString(CryptoJS.enc.hex).toUpperCase()
     next()
   });
 
 // Create model
-module.exports = mongoose.model('Crypto', cryptoSchema) 
+module.exports = mongoose.model('Correspondance', correspondanceSchema) 

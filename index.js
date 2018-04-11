@@ -1,34 +1,36 @@
 const CryptoJS = require('crypto-js')
-const fs = require('fs')
+const Combinatorics = require('js-combinatorics')
 const mongoose = require('mongoose')
-const Model = require('./model')
+const Correspondance = require('./model')
+const SaveCorrespondance = require('./controller')
 
-
+// Mongoose stuff
 const mongoDBURL = 'mongodb://127.0.0.1/cryptoDB';
 mongoose.connect(mongoDBURL)
   .then(() =>  console.log(`connection to ${mongoDBURL} succesful`))
 .catch((err) => console.error(err));
 
-// Get last element inserted
-// db.getCollection('cryptos').find({}).sort({'id':-1}).limit(1)
-
-let last = Model
-    .findOne()
-    .select({ "id": 1, "_id": 0})
-    .sort({'id':'desc'})
-    .exec()
-    .catch()
-    .then((result) => {startCrypto(result.id)})
-
-
-
-const startCrypto = start => {
-  let element;
-let i = start +1 ;
-for(; i < 20; i++){
-    element = new Model({id:i, identity:i, hash:i})
-    element.save().then((a,b) => console.log())
-}  
+// 
+const configs = {
+  alphabets : [0,1,2,3,4,5,6,7,8,9], // Alphabets that will create words
+  wordSize : 2, // The input word size, for ex: 012345 -> 6
+  reset : false, // Delete collections (Correspondance Dictionnary ),
+  information : true // Display some informations on console
 }
+
+// Create all combinaisons with repetition
+const vocabularies = Combinatorics.baseN(configs.alphabets,configs.wordSize)
+
+if(configs.reset){
+  mongoose.connection.db.dropCollection('Correspondance');
+}
+if(configs.information){
+  console.log('---================================================---')
+  console.log("   > Alphabets: " + configs.alphabets)
+  console.log("   > Word size: " +configs.wordSize)
+  console.log("   > Number of combinaisons with repetitions: " + vocabularies.length)
+  console.log('---================================================---')
+}
+//vocabularies.map(element => {SaveCorrespondance(element.join(''))})
 
 /* Crypto and leftpad stuff are inside mongoose save hook: @see ./model.js */
