@@ -24,7 +24,7 @@ node --max-old-space-size=8192 index.js
 Le principe de ce code est de générer un dictionnaire de hash vers une base de donnée MongoDB.
 La finalité de ce projet est de montrer la vulnérabilité des ces algorithmes lorsqu'ils n'utilisent pas de sel dynamique.
 
-numéro de sécurité sociale
+
 La morale de cette histoire est que pour des systèmes hautement sensibles (numéro de sécurité sociale, numéro de compte bancaire, mot de passe)  il est préférable de renforcer les méthodes de hashages, par l'usage d'un sel dynamique, un plus grand nombre d'alphabets, la concaténation de plusieurs infos sensibles, l'ajout de charactères provenant d'autres encodage ou encore l'utilisation récursive de plusieurs types d'algorithmes (demande une grande puissance de calcul)
 
 Après avoir configuré le code faites tout simplement:
