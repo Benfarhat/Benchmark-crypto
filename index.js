@@ -1,75 +1,34 @@
-var CryptoJS = require('crypto-js')
-var fs = require('fs')
-var leftpad = require('leftpad')
+const CryptoJS = require('crypto-js')
+const fs = require('fs')
+const mongoose = require('mongoose')
+const Model = require('./model')
 
-var start = Date.now()
+
+const mongoDBURL = 'mongodb://127.0.0.1/cryptoDB';
+mongoose.connect(mongoDBURL)
+  .then(() =>  console.log(`connection to ${mongoDBURL} succesful`))
+.catch((err) => console.error(err));
+
+// Get last element inserted
+// db.getCollection('cryptos').find({}).sort({'id':-1}).limit(1)
+
+let last = Model
+    .findOne()
+    .select({ "id": 1, "_id": 0})
+    .sort({'id':'desc'})
+    .exec()
+    .catch()
+    .then((result) => {startCrypto(result.id)})
 
 
-var filename = "generate.txt"
-const defaults = {
-    flags: 'w',
-    encoding: 'utf8',
-    fd: null,
-    mode: 0o666,
-    autoClose: true
-  }
-var stream = fs.createWriteStream(filename, defaults)
 
-fd = fs.openSync(filename, 'a')
-
-var configs = {
-    methods : {
-        SHA256 : true,
-        HS : false,
-    },
-    options : {
-        limit : 99999999,
-        key : "Le5d4f69g1sfkb54g43f7ap9",
-        console : false,
-        writeInFile : false,
-        mod: 10000
-    }   
+const startCrypto = start => {
+  let element;
+let i = start +1 ;
+for(; i < 20; i++){
+    element = new Model({id:i, identity:i, hash:i})
+    element.save().then((a,b) => console.log())
+}  
 }
 
-
-stream.once('open', function(fd) {
-    // Starting
-    start = Date.now()
-    console.log("Starting")
-    
-    if(configs.methods.SHA256){
-        stream.write("\n---==============================SHA256==============================---\n\n")
-
-        let i = 0; 
-        for(; i <= configs.options.limit; i++){
-            let word = leftpad(i, 8)
-            let generate = CryptoJS.SHA256(word).toString(CryptoJS.enc.utf8).toUpperCase()
-            if (configs.options.writeInFile) stream.write(leftpad(i, 8) + ":" + generate + "\n")
-            if (configs.options.console) console.log(leftpad(i, 8) + ":" + generate + "\n")
-            
-            if (i % configs.options.mod === 0) console.log(i)
-        } 
-    }
-    
-    if(configs.methods.HS){
-        stream.write("\n---=============================HmacSHA1=============================---\n\n")
-
-        let i = 0; 
-        for(; i <= configs.options.limit; i++){
-            let word = leftpad(i, 8)
-            let generate = CryptoJS.HmacSHA1(word, key).toString(CryptoJS.enc.utf8).toUpperCase()
-            if (configs.options.writeInFile) stream.write(leftpad(i, 8) + ":" + generate + "\n")
-            if (configs.options.console) console.log(leftpad(i, 8) + ":" + generate + "\n")
-            
-            if (i % configs.options.mod === 0) console.log(i)
-        } 
-    }
-
-    // Finished
-    let message = `Finished in: ${ ( Date.now() - start ) / 1000 } seconds`
-    if (configs.options.writeInFile) {
-        stream.write(message)
-        stream.end()
-    }
-    console.log(message)
-});
+/* Crypto and leftpad stuff are inside mongoose save hook: @see ./model.js */
