@@ -37,7 +37,8 @@ mongoose.connect(mongoDBURL)
 // 
 const configs = {
   alphabets : [0,1,2,3,4,5,6,7,8,9], // Alphabets that will create words
-  wordSize : 4, // The input word size, for ex: 012345 -> 6
+  wordSize : 8, // The input word size, for ex: 012345 -> 6
+  items: 400000, // How many word
   reset : false, // Delete collections (Correspondance Dictionnary ),
   information : true // Display some informations on console
 }
@@ -55,7 +56,15 @@ if(configs.information){
   console.log('---================================================---')
 }
 
-
-vocabularies.map(element => {SaveCorrespondance(element.join(''))})
+if(!configs.reset){
+  var i = 0;
+  var start = Date.now()
+  vocabularies.map(element => {
+    if( i == configs.items ) { console.log(((Date.now() - start) / 1000) + " secondes" ) }
+    if( i++ <= configs.items || !configs.items ) {
+      SaveCorrespondance(element.join('')); 
+    } 
+  })
+} 
 
 /* Crypto and leftpad stuff are inside mongoose save hook: @see ./model.js */

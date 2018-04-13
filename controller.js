@@ -7,7 +7,7 @@ module.exports = word => {
   Tuples.save((err, saved) => {
     if (err) {
         if (err.code === 11000) { //error code for duplicate
-          console.error("This correspondance already exists: " + err.message)
+          // console.error("This correspondance already exists: " + err.message)
         }            
     }
   })
